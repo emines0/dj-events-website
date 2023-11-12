@@ -1,6 +1,7 @@
 import EventItem from '@/components/EventItem';
 import Layout from '@/components/Layout';
 import { API_URL } from '@/config/index';
+import Link from 'next/link';
 
 export default function Home({ events }) {
   return (
@@ -11,6 +12,12 @@ export default function Home({ events }) {
       {events.map((evt) => (
         <EventItem evt={evt} key={evt.id} />
       ))}
+
+      {events.length > 0 && (
+        <Link href="/events" className="btn-secondary">
+          <a className="btn-secondary">View All Events</a>
+        </Link>
+      )}
     </Layout>
   );
 }
@@ -18,11 +25,8 @@ export default function Home({ events }) {
 export async function getStaticProps() {
   const res = await fetch(`${API_URL}/api/events`);
   const events = await res.json();
-  console.log(events);
   return {
-    props: {
-      events,
-      revalidate: 1,
-    },
+    props: { events: events.slice(0, 3) }, // get first 3 events
+    revalidate: 1,
   };
 }
